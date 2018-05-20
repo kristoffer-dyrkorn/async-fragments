@@ -6,7 +6,7 @@ const port = 3000
 // Dummy implementation: Simulate reading files from disk with random latency
 function readInput(id, delayFactor) {
   return new Promise((resolve, reject) => {
-    fs.readFile(`${id}.html`, 'utf8', (error, result) => {
+    fs.readFile(`fragments/${id}.html`, 'utf8', (error, result) => {
       if (error) {
         reject(error);
       } else {
