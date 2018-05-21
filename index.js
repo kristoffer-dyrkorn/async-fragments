@@ -4,7 +4,7 @@ const fs = require('fs')
 const port = 3000
 
 // Dummy implementation: Simulate reading files from disk with random latency
-function readInput(id, delayFactor) {
+function readFragment(id, delayFactor) {
   return new Promise((resolve, reject) => {
     fs.readFile(`fragments/${id}.html`, 'utf8', (error, result) => {
       if (error) {
@@ -27,11 +27,11 @@ async function requestHandler(request, response) {
   const fragmentIds = [0,1,2,3]
   const fragmentPromises = fragmentIds.map((id, index) => {
     console.log(`Reading fragment ${id}`)
-    return readInput(id, index)
+    return readFragment(id, index)
   })
 
   // write fragments to the client, sequentially
-  for (let fragmentPromise of fragmentPromises) {
+  for (const fragmentPromise of fragmentPromises) {
     response.write(await fragmentPromise)
     console.log("Sent fragment after " + (Date.now() - startTime) + " ms")
   }
