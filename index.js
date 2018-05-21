@@ -1,5 +1,5 @@
 const http = require('http')
-const fs = require('fs');
+const fs = require('fs')
 
 const port = 3000
 
@@ -8,18 +8,18 @@ function readInput(id, delayFactor) {
   return new Promise((resolve, reject) => {
     fs.readFile(`fragments/${id}.html`, 'utf8', (error, result) => {
       if (error) {
-        reject(error);
+        reject(error)
       } else {
         responseTime = (1000 * Math.random() + delayFactor * 1000).toFixed(2)
         console.log(`Got fragment ${id} after ${responseTime} ms`)
-        setTimeout(resolve, responseTime, result);
+        setTimeout(resolve, responseTime, result)
       }
     });
   });
 }
 
 async function requestHandler(request, response) {
-  console.time("Total response time")
+  const startTime = Date.now()
 
   response.writeHead(200, { 'Content-Type': 'text/html' })
 
@@ -30,16 +30,14 @@ async function requestHandler(request, response) {
     return readInput(id, index)
   })
 
-  const startTime = new Date().getTime()
-
   // write fragments to the client, sequentially
   for (let fragmentPromise of fragmentPromises) {
     response.write(await fragmentPromise)
-    console.log("Sent fragment after " + (new Date().getTime() - startTime) + " ms")
+    console.log("Sent fragment after " + (Date.now() - startTime) + " ms")
   }
 
   response.end()
-  console.timeEnd("Total response time")
+  console.log("Total response time: " + (Date.now() - startTime) + " ms")
 }
 
 const server = http.createServer(requestHandler)
